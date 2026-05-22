@@ -9,5 +9,6 @@ typedef struct RingBuff {
     bool full;
 } RingBuff;
 
+RingBuff *init();
 void write(RingBuff *rb, char newChar);
 char read(RingBuff *rb);

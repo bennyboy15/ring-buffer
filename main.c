@@ -1,5 +1,13 @@
 #include "main.h"
 
+RingBuff *init() {
+    RingBuff *new_rb = malloc(sizeof(RingBuff)); // ALLOCATE DYNAMIC MEMORY FOR NEW RING BUFFER (DONT FORGET TO FREE THIS!!!)
+    new_rb->read_ptr=&(new_rb->arr[0]);  // SET READ POINTER TO ADDRESS OF 1ST INDEX OF ARRAY
+    new_rb->write_ptr=&(new_rb->arr[0]); // SET WRITE POINTER TO ADDRESS OF 1ST INDEX OF ARRAY
+    memset(new_rb->arr, 0, BUFFER_SIZE); // INITIALISE ARRAY WITH ALL 0's (MAYBE A BETTER WAY TO DO THIS!?)
+    return new_rb;
+}
+
 void write(RingBuff *rb, char newChar) {
 
     // IF BUFFER IS FULL
@@ -39,6 +47,12 @@ char read(RingBuff *rb) {
 }
 
 int main() {
-    RingBuff ringBuffer = {.arr = {'a', 'b', 'c', 'd', 'e'}};
-    printf("%c", ringBuffer.arr[0]);
+    RingBuff* rb = init();
+    write(rb, 'G');
+    write(rb, '\'');
+    write(rb, 'D');
+    write(rb, 'A');
+    write(rb, 'Y');
+    printf("%c", read(rb));
+    return 0;
 }
