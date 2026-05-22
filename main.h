@@ -11,5 +11,7 @@ typedef struct RingBuff {
 
 RingBuff *init();
 void reset(RingBuff *rb);
+void freeRB(RingBuff *rb);
+int spaceLeft(RingBuff *rb);
 void write(RingBuff *rb, char newChar);
 char read(RingBuff *rb);

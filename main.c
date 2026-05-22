@@ -15,6 +15,27 @@ void reset(RingBuff *rb){
     memset(rb->arr, 0, BUFFER_SIZE); // DO WE NEED TO DO THIS SINCE IT WILL OVERWRITE?
 }
 
+void freeRB(RingBuff *rb) {
+    free(rb);
+}
+
+int spaceLeft(RingBuff *rb) {
+    int space = 0;
+    // CHECK ONLY IF BUFFER IS NOT FULL, SINCE IF IT IS FULL SPACE WILL BE 0 (DUH!)
+    if (rb->full == false) {
+        // IF WRITE POINTER IS AHEAD OF READ POINTER = BUFFER_SIZE - (WRITE_POINTER - READ_POINTER)
+        if (rb->write_ptr >= rb->read_ptr) {
+            space = BUFFER_SIZE - (rb->write_ptr - rb->read_ptr); // Ex: 5 - (4 - 1) = 2
+        
+        // IF READ POINTER IS AHEAD OF WRITE POINTER = (READ_POINTER - WRITE_POINTER)
+        } else {
+            space = (rb->read_ptr - rb->write_ptr);
+        }
+    }
+
+    return space;
+}
+
 void write(RingBuff *rb, char newChar) {
 
     // IF BUFFER IS FULL
