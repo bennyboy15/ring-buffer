@@ -10,5 +10,6 @@ typedef struct RingBuff {
 } RingBuff;
 
 RingBuff *init();
+void reset(RingBuff *rb);
 void write(RingBuff *rb, char newChar);
 char read(RingBuff *rb);

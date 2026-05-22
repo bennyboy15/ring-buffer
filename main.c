@@ -8,6 +8,13 @@ RingBuff *init() {
     return new_rb;
 }
 
+void reset(RingBuff *rb){
+    rb->read_ptr = &(rb->arr[0]);
+    rb->write_ptr = &(rb->arr[0]);
+    rb->full = false;
+    memset(rb->arr, 0, BUFFER_SIZE); // DO WE NEED TO DO THIS SINCE IT WILL OVERWRITE?
+}
+
 void write(RingBuff *rb, char newChar) {
 
     // IF BUFFER IS FULL
