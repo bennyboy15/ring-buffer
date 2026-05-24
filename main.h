@@ -19,8 +19,9 @@ void write(RingBuff *rb, char newChar);
 char read(RingBuff *rb);
 
 // ATOMIC RING BUFFER
+const size_t ATOMIC_BUFFER_SIZE = 8; // should use a power of 2
 typedef struct {
-  char arr[BUFFER_SIZE];
+  char arr[ATOMIC_BUFFER_SIZE];
   atomic_size_t head;
   atomic_size_t tail;
 } AtomicRingBuff;

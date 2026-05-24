@@ -1,5 +1,6 @@
 #include "main.h"
 
+// RING BUFFER
 RingBuff *init() {
     RingBuff *new_rb = malloc(sizeof(RingBuff)); // ALLOCATE DYNAMIC MEMORY FOR NEW RING BUFFER (DONT FORGET TO FREE THIS!!!)
     new_rb->read_ptr=&(new_rb->arr[0]);  // SET READ POINTER TO ADDRESS OF 1ST INDEX OF ARRAY
@@ -74,7 +75,34 @@ char read(RingBuff *rb) {
     return data;
 }
 
+// ATOMIC RING BUFFER
+AtomicRingBuff *initARB(){
+    AtomicRingBuff *newARB = calloc(1, sizeof(AtomicRingBuff));
+    if (newARB == NULL) {
+        return NULL;
+    }
+    atomic_init(&newARB->head, 0);
+    atomic_init(&newARB->tail, 0);
+    return newARB;
+}
+void resetARB(AtomicRingBuff *rb){
+    
+}
+void freeARB(AtomicRingBuff *rb){
+    
+}
+int spaceLeftARB(AtomicRingBuff *rb){
+    
+}
+void writeARB(AtomicRingBuff *rb, char newChar){
+    
+}
+char readARB(AtomicRingBuff *rb){
+    
+}
+
 int main() {
+    /*
     RingBuff* rb = init();
     write(rb, 'G');
     write(rb, '\'');
@@ -82,5 +110,6 @@ int main() {
     write(rb, 'A');
     write(rb, 'Y');
     printf("%c", read(rb));
+    */
     return 0;
 }
