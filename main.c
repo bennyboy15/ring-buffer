@@ -86,10 +86,21 @@ AtomicRingBuff *initARB(){
     return newARB;
 }
 void resetARB(AtomicRingBuff *rb){
-    
+    if (rb == NULL) {
+        return;
+    }
+    // atomic_store_explicit = sets value of atomic variable
+    /*
+        memory_order_seq_cst = Sequentially Consistent
+        No Reordering: Do not move any memory operations that come before this line to after this line, and vice versa.
+        Global Visibility: Process change to main memory immediately so every other thread sees it instantly.
+        Total Order: All threads in the program will agree on the exact order in which this operation happened relative to other atomic operations.
+    */
+    atomic_store_explicit(&rb->head, 0, memory_order_seq_cst);
+    atomic_store_explicit(&rb->tail, 0, memory_order_seq_cst);
 }
 void freeARB(AtomicRingBuff *rb){
-    
+    free(rb);
 }
 int spaceLeftARB(AtomicRingBuff *rb){
     
