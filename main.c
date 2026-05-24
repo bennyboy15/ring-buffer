@@ -123,10 +123,23 @@ void writeARB(AtomicRingBuff *rb, char newChar){
     }
 
     rb->arr[head] = newChar;
+    // memory_order_release = tells other threads that you can use this slot in arr
     atomic_store_explicit(&rb->head, next_head, memory_order_release);
 }
 char readARB(AtomicRingBuff *rb){
-    
+    size_t head = atomic_load_explicit(&rb->head, memory_order_acquire);
+    size_t tail = atomic_load_explicit(&rb->tail, memory_order_relaxed);
+
+    if (tail == head) {
+        return '\0';
+    }
+    size_t next_tail = (tail + 1) % BUFFER_SIZE;
+
+    char read_value = rb->arr[tail];
+
+    // memory_order_release = I am done reading this slot, other threads can overwrite this now!
+    atomic_store_explicit(&rb->tail, next_tail, memory_order_release); 
+    return read_value;
 }
 
 int main() {
