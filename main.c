@@ -76,6 +76,7 @@ char read(RingBuff *rb) {
 }
 
 // ATOMIC RING BUFFER
+// atomic protects program from race conditions
 AtomicRingBuff *initARB(){
     AtomicRingBuff *newARB = calloc(1, sizeof(AtomicRingBuff));
     if (newARB == NULL) {
@@ -85,6 +86,7 @@ AtomicRingBuff *initARB(){
     atomic_init(&newARB->tail, 0);
     return newARB;
 }
+
 void resetARB(AtomicRingBuff *rb){
     if (rb == NULL) {
         return;
@@ -99,9 +101,11 @@ void resetARB(AtomicRingBuff *rb){
     atomic_store_explicit(&rb->head, 0, memory_order_seq_cst);
     atomic_store_explicit(&rb->tail, 0, memory_order_seq_cst);
 }
+
 void freeARB(AtomicRingBuff *rb){
     free(rb);
 }
+
 int spaceLeftARB(AtomicRingBuff *rb){
     // atomic_load_explicit = load value from atomic variable
     // Load the index head and tail is currently at to compare
@@ -111,6 +115,7 @@ int spaceLeftARB(AtomicRingBuff *rb){
     size_t used = (head - tail + ATOMIC_BUFFER_SIZE) % ATOMIC_BUFFER_SIZE;
     return (ATOMIC_BUFFER_SIZE - 1) - used;
 }
+
 void writeARB(AtomicRingBuff *rb, char newChar){
     size_t head = atomic_load_explicit(&rb->head, memory_order_relaxed);
     size_t tail = atomic_load_explicit(&rb->tail, memory_order_acquire);
@@ -126,6 +131,7 @@ void writeARB(AtomicRingBuff *rb, char newChar){
     // memory_order_release = tells other threads that you can use this slot in arr
     atomic_store_explicit(&rb->head, next_head, memory_order_release);
 }
+
 char readARB(AtomicRingBuff *rb){
     size_t head = atomic_load_explicit(&rb->head, memory_order_acquire);
     size_t tail = atomic_load_explicit(&rb->tail, memory_order_relaxed);
@@ -143,6 +149,8 @@ char readARB(AtomicRingBuff *rb){
 }
 
 int main() {
+
+    // RING BUFFER
     /*
     RingBuff* rb = init();
     write(rb, 'G');
@@ -152,5 +160,15 @@ int main() {
     write(rb, 'Y');
     printf("%c", read(rb));
     */
+
+    // ATOMIC RING BUFFER
+    AtomicRingBuff* rb = initARB();
+    writeARB(rb, 'G');
+    writeARB(rb, '\'');
+    writeARB(rb, 'D');
+    writeARB(rb, 'A');
+    writeARB(rb, 'Y');
+    printf("%c", readARB(rb));
+
     return 0;
 }
