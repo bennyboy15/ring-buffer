@@ -112,7 +112,18 @@ int spaceLeftARB(AtomicRingBuff *rb){
     return (ATOMIC_BUFFER_SIZE - 1) - used;
 }
 void writeARB(AtomicRingBuff *rb, char newChar){
-    
+    size_t head = atomic_load_explicit(&rb->head, memory_order_relaxed);
+    size_t tail = atomic_load_explicit(&rb->tail, memory_order_acquire);
+
+    size_t next_head = (head + 1) % ATOMIC_BUFFER_SIZE; // Smarter way to get index to wrap back to start! Ex: 7+1 % 8 = 0 (BACK TO START!)
+
+    // This checks if the next slot runs into the tail ("Waste One Slot" rule)
+    if (next_head == tail) {
+        return;
+    }
+
+    rb->arr[head] = newChar;
+    atomic_store_explicit(&rb->head, next_head, memory_order_release);
 }
 char readARB(AtomicRingBuff *rb){
     
