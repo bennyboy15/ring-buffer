@@ -2,8 +2,10 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#define BUFFER_SIZE 5
+#define ATOMIC_BUFFER_SIZE 8
+
 // RING BUFFER
-const int BUFFER_SIZE = 5;
 typedef struct RingBuff {
   char *read_ptr;
   char *write_ptr;
@@ -19,7 +21,6 @@ void write(RingBuff *rb, char newChar);
 char read(RingBuff *rb);
 
 // ATOMIC RING BUFFER
-const size_t ATOMIC_BUFFER_SIZE = 8; // should use a power of 2
 typedef struct {
   char arr[ATOMIC_BUFFER_SIZE];
   atomic_size_t head;
