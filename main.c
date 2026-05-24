@@ -103,7 +103,13 @@ void freeARB(AtomicRingBuff *rb){
     free(rb);
 }
 int spaceLeftARB(AtomicRingBuff *rb){
-    
+    // atomic_load_explicit = load value from atomic variable
+    // Load the index head and tail is currently at to compare
+    size_t head = atomic_load_explicit(&rb->head, memory_order_relaxed);
+    size_t tail = atomic_load_explicit(&rb->tail, memory_order_relaxed);
+
+    size_t used = (head - tail + ATOMIC_BUFFER_SIZE) % ATOMIC_BUFFER_SIZE;
+    return (ATOMIC_BUFFER_SIZE - 1) - used;
 }
 void writeARB(AtomicRingBuff *rb, char newChar){
     
